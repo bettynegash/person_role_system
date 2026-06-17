@@ -1,150 +1,88 @@
-# person_role_system
-Student Record Management System
+import javax.swing.*;
+import java.io.*;
 
-Project Description
+public class NotepadApp {
 
-The Student Record Management System is a Java Object-Oriented Programming (OOP) application that manages student records using Java File I/O and Streams.
+    public static void main(String[] args) {
 
-The system allows users to add, search, update, delete, and display student information. It also generates reports and stores data using text files, binary files, and object serialization.
+        JFrame frame = new JFrame("Simple Notepad");
 
----
+        JTextArea textArea = new JTextArea();
+        JScrollPane scrollPane = new JScrollPane(textArea);
 
-Features
+        JMenuBar menuBar = new JMenuBar();
 
-- Add Student
-- Search Student by ID
-- Update Student Information
-- Delete Student
-- Display All Students
-- Generate Report
-- Save Data to Text File
-- Save Data to Binary File
-- Save Data using Object Serialization
-- Display File Information
-- Create Backup using Buffered Streams
-- Exception Handling
+        JMenu fileMenu = new JMenu("File");
 
----
+        JMenuItem newItem = new JMenuItem("New");
+        JMenuItem openItem = new JMenuItem("Open");
+        JMenuItem saveItem = new JMenuItem("Save");
+        JMenuItem exitItem = new JMenuItem("Exit");
 
-Classes Used
+        fileMenu.add(newItem);
+        fileMenu.add(openItem);
+        fileMenu.add(saveItem);
+        fileMenu.addSeparator();
+        fileMenu.add(exitItem);
 
-1. Student.java
+        menuBar.add(fileMenu);
 
-Stores student information:
+        frame.setJMenuBar(menuBar);
 
-- Student ID
-- Name
-- Department
-- GPA
+        frame.add(scrollPane);
 
-2. StudentManagement.java
+        // New
+        newItem.addActionListener(e -> textArea.setText(""));
 
-Manages student operations:
+        // Open
+        openItem.addActionListener(e -> {
+            JFileChooser chooser = new JFileChooser();
 
-- Add Student
-- Search Student
-- Update Student
-- Delete Student
-- Display Students
-- Generate Report
+            if (chooser.showOpenDialog(frame) == JFileChooser.APPROVE_OPTION) {
 
-3. FileManager.java
+                File file = chooser.getSelectedFile();
 
-Handles file operations:
+                try (BufferedReader reader =
+                             new BufferedReader(new FileReader(file))) {
 
-- Text Files (PrintWriter)
-- Binary Files (DataOutputStream)
-- Object Serialization (ObjectOutputStream)
-- File Information (File class)
-- Backup using Buffered Streams
+                    textArea.setText("");
 
-4. Main.java
+                    String line;
 
-Contains the main method and menu-driven user interface.
+                    while ((line = reader.readLine()) != null) {
+                        textArea.append(line + "\n");
+                    }
 
----
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
+            }
+        });
 
-File I/O Used
+        // Save
+        saveItem.addActionListener(e -> {
+            JFileChooser chooser = new JFileChooser();
 
-Text Files
+            if (chooser.showSaveDialog(frame) == JFileChooser.APPROVE_OPTION) {
 
-- PrintWriter
+                File file = chooser.getSelectedFile();
 
-Binary Files
+                try (BufferedWriter writer =
+                             new BufferedWriter(new FileWriter(file))) {
 
-- DataOutputStream
+                    writer.write(textArea.getText());
 
-Object Serialization
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
+            }
+        });
 
-- ObjectOutputStream
+        // Exit
+        exitItem.addActionListener(e -> System.exit(0));
 
-Buffered Streams
-
-- BufferedInputStream
-- BufferedOutputStream
-
-File Class
-
-Used to display:
-
-- File name
-- File path
-- File size
-
----
-
-Report Generated
-
-The system generates:
-
-- Total Students
-- Highest GPA
-- Lowest GPA
-- Average GPA
-
----
-
-Exception Handling
-
-Try-catch blocks are used to handle exceptions that may occur during file operations.
-
----
-
-Project Structure
-
-StudentRecordManagementSystem
-│
-├── Student.java
-├── StudentManagement.java
-├── FileManager.java
-├── Main.java
-│
-├── students.txt
-├── students.dat
-├── students.obj
-└── students_backup.obj
-
----
-
-Concepts Used
-
-- Classes and Objects
-- Encapsulation
-- ArrayList
-- File I/O
-- Scanner
-- PrintWriter
-- DataInputStream and DataOutputStream
-- ObjectInputStream and ObjectOutputStream
-- Buffered Streams
-- Exception Handling
-
----
-
-Author
-
-Student Name: __________________
-
-Course: Object-Oriented Programming (Java)
-
-Language Used: Java
+        frame.setSize(600, 400);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setVisible(true);
+    }
+}
